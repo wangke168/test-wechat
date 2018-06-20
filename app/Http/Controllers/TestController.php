@@ -13,4 +13,10 @@ class TestController extends Controller
     {
         $this->weObj=app('wechat.official_account');
     }
+    public function index()
+    {
+        $message = new Text('FromUserName');
+        $result = $this->weObj->customer_service->message($message)->to('o5--l1Pl9YZWPj9n342XbdpJdG8w')->send();
+
+    }
 }
