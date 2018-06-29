@@ -16,8 +16,8 @@ class ApiController extends Controller
     public function token()
     {
         $token=$this->weObj->access_token->getToken();
-        $ticket=$this->js->ticket();
-        $data=['token'=>$token,'ticket'=>$ticket];
+
+        $data=['token'=>$token];
         return response()->json($data);
     }
 }
