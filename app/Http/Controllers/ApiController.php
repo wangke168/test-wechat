@@ -11,7 +11,7 @@ class ApiController extends Controller
     public function __construct()
     {
         $this->weObj=app('wechat.official_account');
-        $this->js=$this->weObj->js;
+//        $this->js=$this->weObj->js;
     }
     public function token()
     {
