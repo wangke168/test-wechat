@@ -12,6 +12,7 @@ class ApiController extends Controller
     {
         $this->weObj=app('wechat.official_account');
 //        $this->js=$this->weObj->js;
+
     }
     public function token()
     {
