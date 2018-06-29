@@ -16,7 +16,7 @@ class ApiController extends Controller
     }
     public function api()
     {
-        return $this->js->ticket();
+        return $this->js->getTicket();
     }
     public function token()
     {
