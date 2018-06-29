@@ -18,4 +18,6 @@ Route::any('/wechat', 'WeChatController@serve');
 
 Route::get('/test', 'TestController@index');
 
+Route::get('/api','ApiController@api');
+
 Route::get('/token','ApiController@token');
