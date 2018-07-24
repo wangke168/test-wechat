@@ -25,8 +25,8 @@ class Response
                 $content->content = '无eventkey';
             }
         } elseif ($keyword == 'wxh') {
-            $content = new Text();
-            $content->content = $openid;
+            $content = new Text($openid);
+//            $content->content = $openid;
         }
 /*        elseif ($keyword == '预约') {
             $content = new Text();
@@ -39,8 +39,8 @@ class Response
         elseif (strstr($keyword, '天气')) {
             /*$content = new Text();
             $content->content = $this->get_weather_info();*/
-            $content = new Text();
-            $content->content ="横店圆明新园官方客服电话" . "\n" . "0579-89600055";
+            $text = new Text();
+            $text->content = '您好！overtrue。';
         }
 /*        elseif (str_contains($keyword, '取消') || str_contains($keyword, '退款') || str_contains($keyword, '退订') || str_contains($keyword, '订单')) {
             // 转发收到的消息给客服
