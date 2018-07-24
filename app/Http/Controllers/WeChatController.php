@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Log;
 use DB;
 use EasyWeChat\Kernel\Messages\Text;
+
 class WeChatController extends Controller
 {
     /**
@@ -19,12 +20,12 @@ class WeChatController extends Controller
 
         $app = app('wechat.official_account');
 
-        $app->server->push(function($message){
-            $openid=$message['FromUserName'];
+        $app->server->push(function ($message) {
+            $openid = $message['FromUserName'];
 
             /*$text = new Text($message['FromUserName']);
-            return $text;
-            $response = new Response();*/
+            return $text;*/
+            $response = new Response();
             switch ($message['MsgType']) {
                 case 'event':
                     # 事件消息...
@@ -44,7 +45,11 @@ class WeChatController extends Controller
                     }
                     break;
                 case 'text':
-
+                    //把内容加入wx_recevice_txt
+                    DB::table('wx_recevice_txt')
+                        ->insert(['wx_openid' => $openid, 'content' => $message->Content]);
+                    $content = ($response->news($message, $message['Content']));
+                    return $content;
                     break;
                 case 'image':
 
