@@ -21,3 +21,5 @@ Route::get('/test', 'TestController@index');
 Route::get('/api','ApiController@api');
 
 Route::get('/token','ApiController@token');
+
+Route::get('/menu/add','MenuController@add');
