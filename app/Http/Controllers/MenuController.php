@@ -26,7 +26,7 @@ class MenuController extends Controller
         $type = $request->input('type');
         switch ($type) {
             case 'index':
-                $menus = $this->menu->all();
+                $menus = $this->menu->list();
                 return $menus;
                 break;
             case 'add':
