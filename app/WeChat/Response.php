@@ -37,8 +37,9 @@ class Response
             $content->content = $tour->verification_subscribe($openid, '1');
         } */
         elseif (strstr($keyword, '天气')) {
-            $content = new Text();
-            $content->content = $this->get_weather_info();
+            /*$content = new Text();
+            $content->content = $this->get_weather_info();*/
+            $content = new Text("横店圆明新园官方客服电话" . "\n" . "0579-89600055");
         }
 /*        elseif (str_contains($keyword, '取消') || str_contains($keyword, '退款') || str_contains($keyword, '退订') || str_contains($keyword, '订单')) {
             // 转发收到的消息给客服
