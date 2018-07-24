@@ -25,8 +25,10 @@ class Response
                 $content->content = '无eventkey';
             }
         } elseif ($keyword == 'wxh') {
-            $content = new Text($openid);
+//            $content = new Text($openid);
 //            $content->content = $openid;
+            $content = new Text();
+            $content->setAttribute('content', '您好！overtrue。');
         }
 /*        elseif ($keyword == '预约') {
             $content = new Text();
