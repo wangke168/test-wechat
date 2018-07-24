@@ -28,9 +28,9 @@ class WeChatController extends Controller
             switch ($message['MsgType']) {
                 case 'event':
                     # 事件消息...
-                    switch ($message->Event) {
+                    switch ($message['Event']) {
                         case 'CLICK':
-                            switch ($message->EventKey) {
+                            switch ($message['EventKey']) {
                                 case "13":
                                     $content = new Text("横店圆明新园官方客服电话" . "\n" . "0579-89600055");
 //                                    $content->content = "横店圆明新园官方客服电话" . "\n" . "0579-89600055";
