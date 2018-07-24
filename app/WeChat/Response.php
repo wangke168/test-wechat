@@ -37,10 +37,8 @@ class Response
             $content->content = $tour->verification_subscribe($openid, '1');
         } */
         elseif (strstr($keyword, '天气')) {
-            /*$content = new Text();
-            $content->content = $this->get_weather_info();*/
-            $text = new Text();
-            $text->content = '您好！overtrue。';
+            $content = new Text($this->get_weather_info());
+//            $content->content = $this->get_weather_info();
         }
 /*        elseif (str_contains($keyword, '取消') || str_contains($keyword, '退款') || str_contains($keyword, '退订') || str_contains($keyword, '订单')) {
             // 转发收到的消息给客服
