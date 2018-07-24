@@ -25,7 +25,7 @@ class WeChatController extends Controller
 /*
             $text = new Text($message['FromUserName']);
             return $text;*/
-            $response = new Response();
+//            $response = new Response();
             switch ($message['MsgType']) {
                 case 'event':
                     # 事件消息...
@@ -37,7 +37,8 @@ class WeChatController extends Controller
                                     $content->content = "横店圆明新园官方客服电话" . "\n" . "0579-89600055";
                                     return $content;*/
 
-                                    return "您好！欢迎关注我!";
+                                    $text = new Text($message['FromUserName']);
+                                    return $text;
                                 default:
 //                                    $response->click_request($openid, $message->EventKey);
                                     break;
@@ -91,10 +92,10 @@ class WeChatController extends Controller
                     break;
                 case 'text':
                     //把内容加入wx_recevice_txt
-                    DB::table('wx_recevice_txt')
+                /*    DB::table('wx_recevice_txt')
                         ->insert(['wx_openid' => $openid, 'content' => $message->Content]);
                     $content = ($response->news($message, $message->Content));
-                    return $content;
+                    return $content;*/
 
                     break;
                 case 'image':
