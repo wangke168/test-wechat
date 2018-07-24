@@ -22,4 +22,5 @@ Route::get('/api','ApiController@api');
 
 Route::get('/token','ApiController@token');
 
+Route::get('/menu','MenuController@menu');
 Route::get('/menu/add','MenuController@add');
