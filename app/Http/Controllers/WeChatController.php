@@ -46,8 +46,8 @@ class WeChatController extends Controller
                     break;
                 case 'text':
                     //把内容加入wx_recevice_txt
-                    /*DB::table('wx_recevice_txt')
-                        ->insert(['wx_openid' => $openid, 'content' => $message->Content]);*/
+                    DB::table('wx_recevice_txt')
+                        ->insert(['wx_openid' => $openid, 'content' => $message['Content']]);
                     $content = ($response->news($message, $message['Content']));
                     return $content;
                     break;

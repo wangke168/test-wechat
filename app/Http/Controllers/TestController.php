@@ -19,4 +19,10 @@ class TestController extends Controller
         $result = $this->weObj->customer_service->message($message)->to('o5--l1Pl9YZWPj9n342XbdpJdG8w')->send();
 
     }
+    public function test()
+    {
+        $row=\DB::table('wx_recevice_txt')
+            ->insert(['wx_openid' => 'dasdasdsa', 'content' => 'sadas']);
+        return $row;
+    }
 }
