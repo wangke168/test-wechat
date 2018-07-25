@@ -7,10 +7,26 @@
  */
 namespace App\WeChat;
 
+use App\Models\WechatArticle;
 use DB;
 use EasyWeChat\Kernel\Messages\Text;
+use EasyWeChat\Kernel\Messages\News;
+use EasyWeChat\Kernel\Messages\NewsItem;
 class Response
 {
+    public $app;
+    public $usage;
+    public $openid;
+    public $server;
+    public $staff;
+
+    public function __construct()
+    {
+        $this->app = app('wechat.official_account');
+
+        $this->usage = new Usage();
+
+    }
     public function news($message, $keyword)
     {
 
@@ -18,15 +34,15 @@ class Response
         $openid = $message['FromUserName'];
 
         if ($keyword == 'a') {
-            $content = new Text();
+//            $content = new Text();
             if ($this->usage->get_openid_info($openid)->eventkey) {
-                $content->content = $this->usage->get_openid_info($openid)->eventkey;
+                $result = $this->usage->get_openid_info($openid)->eventkey;
             } else {
-                $content->content = '无eventkey';
+                $result = '无eventkey';
             }
+            $content = new Text($result);
         } elseif ($keyword == 'wxh') {
             $content = new Text($openid);
-
         }
 /*        elseif ($keyword == '预约') {
             $content = new Text();
@@ -60,7 +76,110 @@ class Response
         return $content;
     }
 
+    /**
+     * 推送图文
+     * @param $openid
+     * @param $eventkey
+     * @param $type 1：关注    2：菜单    3：关键字
+     * @param $keyword      关键字
+     * @param $menuid       菜单ID
+     */
 
+//$this->request_news($openid, 'all', '1', '', '');
+    public function request_news($openid, $eventkey, $type, $keyword, $menuid)
+    {
+//        $wxnumber = Crypt::encrypt($openid);      //由于龙帝惊临预约要解密，采用另外的函数
+        $wxnumber = $this->usage->authcode($openid, 'ENCODE', 0);
+//        $uid = $this->usage->get_uid($openid);
+        if (!$eventkey) {
+            $eventkey = 'all';
+        }
+        switch ($type) {
+            case 1:
+                $row = WechatArticle::focusPublished($eventkey)
+                    ->skip(0)->take(8)->get();
+                break;
+            case 2:
+                $row = WechatArticle::where('classid', $menuid)
+                    ->usagePublished($eventkey)
+                    ->skip(0)->take(8)->get();
+                break;
+            case 3:
+                $keyword = $this->check_keywowrd($keyword);
+                $row = WechatArticle::whereRaw('FIND_IN_SET("' . $keyword . '", keyword)')
+                    ->usagePublished($eventkey)
+                    ->skip(0)->take(8)->get();
+                break;
+        }
+        if ($row) {
+            $content = array();
+            foreach ($row as $result) {
+                $url = $result->url;
+                $id = $result->id;
+                /*如果只直接跳转链接页面时，判断是否已经带参数*/
+                if ($url != '') {
+                    /*链接跳转的数据统计*/
+                    $url = "https://" . $_SERVER['HTTP_HOST'] . "/jump/{$id}/{$openid}";
+
+                } else {
+                    $url = "https://" . $_SERVER['HTTP_HOST'] . "/article/detail?id=" . $id . "&wxnumber=" . $wxnumber;
+                }
+
+                $pic_url = "https://wx-control.hdyuanmingxinyuan.com/" . $result->picurl;
+
+                /*索引图检查结束*/
+/*                $new = new News();
+                $new->title = $result->title;
+                $new->description = $result->description;
+                $new->url = $url;
+                $new->image = $pic_url;
+                $content[] = $new;*/
+
+                $items =new NewsItem([
+                        'title'       => $result->title,
+                        'description' => $result->description,
+                        'url'         => $url,
+                        'image'       => $pic_url,
+                        // ...
+                    ]);
+                $content[] = $items;
+            }
+            $news = new News($content);
+//            $this->app->staff->message($content)->by('1001@u_hengdian')->to($openid)->send();
+            $this->app->customer_service->message($news)->to($openid)->send();
+        }
+
+    }
+
+
+
+
+    /**
+     * 菜单回复
+     * @param $openid
+     * @param $menuID
+     * @return array|Text
+     */
+    public function click_request($openid, $menuid)
+    {
+        $eventkey = $this->usage->get_openid_info($openid)->eventkey;
+        $this->request_news($openid, $eventkey, '2', '', $menuid);
+        $this->add_menu_click_hit($openid, $menuid); //增加点击数统计
+//        return $content;
+    }
+
+
+    /**
+     * 增加菜单点击数
+     * @param $openid
+     * @param $menuID
+     */
+
+    private function add_menu_click_hit($openid, $menuID)
+    {
+        DB::table('wx_click_hits')
+            ->insert(['wx_openid' => $openid, 'click' => $menuID]);
+    }
 
 
     /**

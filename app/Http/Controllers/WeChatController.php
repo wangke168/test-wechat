@@ -37,7 +37,7 @@ class WeChatController extends Controller
 //                                    $content->content = "横店圆明新园官方客服电话" . "\n" . "0579-89600055";
                                     return $content;
                                 default:
-//                                    $response->click_request($openid, $message->EventKey);
+                                    $response->click_request($openid, $message->EventKey);
                                     break;
                             }
                             break;
