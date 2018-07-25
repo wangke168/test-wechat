@@ -8,14 +8,37 @@ use EasyWeChat\Kernel\Messages\Text;
 use App\Models\WechatArticle;
 use EasyWeChat\Kernel\Messages\News;
 use EasyWeChat\Kernel\Messages\NewsItem;
+
 class TestController extends Controller
 {
     public $weObj;
     public $config;
+
     public function __construct()
     {
-        $this->weObj=app('wechat.official_account');
+        $this->weObj = app('wechat.official_account');
     }
+
+    public function response_test1()
+    {
+        $news1 =
+            new NewsItem([
+                'title' => 'title',
+                'description' => '...',
+                'url' => 'url',
+                'image' => 'image',
+            ]);
+        $news2 =
+            new NewsItem([
+                'title' => 'title',
+                'description' => '...',
+                'url' => 'url',
+                'image' => 'image',
+            ]);
+        $news = new News([$news1, $news2]);
+        var_dump($news);
+    }
+
     public function response_test()
     {
         $row = WechatArticle::where('classid', '7')
@@ -33,43 +56,51 @@ class TestController extends Controller
                     $url = "https://" . $_SERVER['HTTP_HOST'] . "/jump/{$id}";
 
                 } else {
-                    $url = "https://" . $_SERVER['HTTP_HOST'] . "/article/detail?id=" . $id . "&wxnumber=" ;
+                    $url = "https://" . $_SERVER['HTTP_HOST'] . "/article/detail?id=" . $id . "&wxnumber=";
                 }
 
                 $pic_url = "https://wx-control.hdyuanmingxinyuan.com/" . $result->picurl;
-
-                /*索引图检查结束*/
-                /*                $new = new News();
-                                $new->title = $result->title;
-                                $new->description = $result->description;
-                                $new->url = $url;
-                                $new->image = $pic_url;
-                                $content[] = $new;*/
 
                 $items = new NewsItem([
                     'title' => $result->title,
                     'description' => $result->description,
                     'url' => $url,
                     'image' => $pic_url,
-                    // ...
                 ]);
+
                 $content[] = $items;
             }
             $news = new News($content);
         }
-        return($news);
+        var_dump($news);
     }
 
 
     public function index()
     {
         $message = new Text('FromUserName');
-        $result = $this->weObj->customer_service->message($message)->to('o5--l1Pl9YZWPj9n342XbdpJdG8w')->send();
+        $news1 =
+            new NewsItem([
+                'title' => 'title',
+                'description' => '...',
+                'url' => 'url',
+                'image' => 'image',
+            ]);
+        $news2 =
+            new NewsItem([
+                'title' => 'title',
+                'description' => '...',
+                'url' => 'url',
+                'image' => 'image',
+            ]);
+        $news = new News([$news1, $news2]);
+        $result = $this->weObj->customer_service->message($news)->to('o5--l1Pl9YZWPj9n342XbdpJdG8w')->send();
 
     }
+
     public function test()
     {
-        $row=\DB::table('wx_recevice_txt')
+        $row = \DB::table('wx_recevice_txt')
             ->insert(['wx_openid' => 'dasdasdsa', 'content' => 'sadas']);
         var_dump($row);
     }
