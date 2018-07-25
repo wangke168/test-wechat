@@ -19,6 +19,7 @@ class Count
      */
     public function add_article_hits($id)
     {
+
         DB::table('wx_article')
             ->where('id', $id)
             ->increment('hits');

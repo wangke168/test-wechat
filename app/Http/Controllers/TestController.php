@@ -9,7 +9,7 @@ use EasyWeChat\Kernel\Messages\Text;
 use App\Models\WechatArticle;
 use EasyWeChat\Kernel\Messages\News;
 use EasyWeChat\Kernel\Messages\NewsItem;
-
+use App\WeChat\Count;
 class TestController extends Controller
 {
     public $weObj;
@@ -22,19 +22,19 @@ class TestController extends Controller
 
     public function response_test1()
     {
-        $row = DB::table('wx_user_info')
-            ->where('wx_openid', 'o5--l1Pl9YZWPj9n342XbdpJdG8w')
-            ->first();
-        if (!$row)
-        {
-            DB::table('wx_user_info')
-                ->insert(['wx_openid' => 'o5--l1Pl9YZWPj9n342XbdpJdG8w', 'eventkey' => '', 'tag_id' => '', 'subscribe' => '1', 'adddate' => Carbon::now(), 'scandate' => Carbon::now()]);
-
+        $past_time = Carbon::now()->subSeconds(30);
+        $row = DB::table('wx_article_hits')
+            ->where('article_id', '1493')
+            ->where('wx_openid', 'sadasd')
+            ->where('adddate', '>', $past_time)
+            ->orderBy('id', 'desc')
+            ->get();
+        if ($row) {
+            return true;
+        } else {
+            return false;
         }
-        $row = DB::table('wx_user_info')
-            ->where('wx_openid', 'o5--l1Pl9YZWPj9n342XbdpJdG8w')
-            ->first();
-        return $row;
+
     }
 
     public function response_test()
