@@ -24,3 +24,6 @@ Route::get('/token','ApiController@token');
 
 Route::get('/menu','MenuController@menu');
 Route::get('/menu/add','MenuController@add');
+
+//跳转
+Route::get('/jump/{id}/{openid}','LinkJumpController@index');
