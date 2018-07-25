@@ -23,6 +23,6 @@ class TestController extends Controller
     {
         $row=\DB::table('wx_recevice_txt')
             ->insert(['wx_openid' => 'dasdasdsa', 'content' => 'sadas']);
-        return $row;
+        var_dump($row);
     }
 }
