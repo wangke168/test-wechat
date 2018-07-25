@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use DB;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Text;
@@ -21,22 +22,19 @@ class TestController extends Controller
 
     public function response_test1()
     {
-        $news1 =
-            new NewsItem([
-                'title' => 'title',
-                'description' => '...',
-                'url' => 'url',
-                'image' => 'image',
-            ]);
-        $news2 =
-            new NewsItem([
-                'title' => 'title',
-                'description' => '...',
-                'url' => 'url',
-                'image' => 'image',
-            ]);
-        $news = new News([$news1, $news2]);
-        var_dump($news);
+        $row = DB::table('wx_user_info')
+            ->where('wx_openid', 'o5--l1Pl9YZWPj9n342XbdpJdG8w')
+            ->first();
+        if (!$row)
+        {
+            DB::table('wx_user_info')
+                ->insert(['wx_openid' => 'o5--l1Pl9YZWPj9n342XbdpJdG8w', 'eventkey' => '', 'tag_id' => '', 'subscribe' => '1', 'adddate' => Carbon::now(), 'scandate' => Carbon::now()]);
+
+        }
+        $row = DB::table('wx_user_info')
+            ->where('wx_openid', 'o5--l1Pl9YZWPj9n342XbdpJdG8w')
+            ->first();
+        return $row;
     }
 
     public function response_test()

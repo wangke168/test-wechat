@@ -26,7 +26,7 @@ class Usage
         if (!$row)
         {
             DB::table('wx_user_info')
-                ->insert(['wx_openid' => $openid, 'eventkey' => '', 'tag_id' => '', 'subscribe' => '1', 'adddate' => Carbon::now(), 'scandate' => Carbon::now()]);
+                ->insert(['wx_openid' => $openid, 'eventkey' => '','subscribe' => '1', 'adddate' => Carbon::now(), 'scandate' => Carbon::now()]);
 
         }
         $row = DB::table('wx_user_info')
