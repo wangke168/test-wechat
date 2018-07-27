@@ -22,19 +22,37 @@ class TestController extends Controller
 
     public function response_test1()
     {
+
         $past_time = Carbon::now()->subSeconds(30);
         $row = DB::table('wx_article_hits')
             ->where('article_id', '1493')
-            ->where('wx_openid', 'sadasd')
+            ->where('wx_openid', 'sd')
+            ->where('adddate', '>', $past_time)
+            ->orderBy('id', 'desc')
+            ->first();
+//        dd($row);
+//        return $row;
+        if ($row) {
+            return '1';
+        } else {
+            return '2';
+        }
+
+    }
+    private function time_check($id, $openid)
+    {
+        $past_time = Carbon::now()->subSeconds(30);
+        $row = DB::table('wx_article_hits')
+            ->where('article_id', $id)
+            ->where('wx_openid', $openid)
             ->where('adddate', '>', $past_time)
             ->orderBy('id', 'desc')
             ->get();
-        if ($row) {
+        if (!$row) {
             return true;
         } else {
             return false;
         }
-
     }
 
     public function response_test()

@@ -47,7 +47,7 @@ class Count
             ->where('wx_openid', $openid)
             ->where('adddate', '>', $past_time)
             ->orderBy('id', 'desc')
-            ->get();
+            ->first();
         if ($row) {
             return true;
         } else {
