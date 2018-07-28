@@ -8,8 +8,13 @@
 namespace App\WeChat;
 
 use App\Models\WechatArticle;
+use App\Models\WechatTxt;
+use App\Models\WechatVoice;
+use App\Models\WechatImage;
 use DB;
 use EasyWeChat\Kernel\Messages\Text;
+use EasyWeChat\Kernel\Messages\Image;
+use EasyWeChat\Kernel\Messages\Voice;
 use EasyWeChat\Kernel\Messages\News;
 use EasyWeChat\Kernel\Messages\NewsItem;
 class Response
@@ -30,7 +35,6 @@ class Response
     public function news($message, $keyword)
     {
 
-//        $userService = $this->app->user;
         $openid = $message['FromUserName'];
 
         if ($keyword == 'a') {
@@ -44,37 +48,274 @@ class Response
         } elseif ($keyword == 'wxh') {
             $content = new Text($openid);
         }
-/*        elseif ($keyword == '预约') {
-            $content = new Text();
-            $content->content = $this->query_wite_info($openid);
-        } elseif ($keyword == 'hx') {
-            $content = new Text();
-            $tour = new Tour();
-            $content->content = $tour->verification_subscribe($openid, '1');
-        } */
         elseif (strstr($keyword, '天气')) {
             $content = new Text($this->get_weather_info());
         }
-/*        elseif (str_contains($keyword, '取消') || str_contains($keyword, '退款') || str_contains($keyword, '退订') || str_contains($keyword, '订单')) {
-            // 转发收到的消息给客服
-            $online_staff = $this->staff->onlines();
-            if (empty($online_staff['kf_online_list'])) {
-                $content = $this->request_keyword($openid, $keyword);
-            } else {
-                return new \EasyWeChat\Message\Transfer();
-            }*/
-
-            /*$transfer = new \EasyWeChat\Message\Transfer();
-            $transfer->account('kf2001@u_hengdian');// 或者 $transfer->to($account);
-
-            return $transfer;*/
-//        }
         else {
             $content = $this->request_keyword($openid, $keyword);
         }
-
         return $content;
     }
+
+    /**
+     * 关键字回复
+     * @param $openid
+     * @param $keyword
+     * @return array|Text
+     */
+    private function request_keyword($openid, $keyword)
+    {
+        $eventkey = $this->usage->get_openid_info($openid)->eventkey;
+        if (!$eventkey) {
+            $eventkey = 'all';
+        }
+//        $content = $this->request_news($openid, $eventkey, '3', $keyword, '');
+
+        $flag = false; //先设置flag，如果news，txt，voice都没有的话，检查flag值，还是false时，输出默认关注显示
+        //检查该关键字回复中是否有图文消息
+        if ($this->check_keyword_message($eventkey, "news", $keyword)) {
+            $flag = true;
+            $this->request_news($openid, $eventkey, '3', $keyword, '');
+//            $this->app->staff->message($content_news)->by('1001@u_hengdian')->to($openid)->send();
+        }
+        if ($this->check_keyword_message($eventkey, "voice", $keyword)) {
+            $flag = true;
+            $this->request_voice($openid, '2', $eventkey, $keyword);
+        }
+        if ($this->check_keyword_message($eventkey, "txt", $keyword)) {
+            $flag = true;
+            $this->request_txt($openid, '2', $eventkey, $keyword); //直接在查询文本回复时使用客服接口
+        }
+        if ($this->check_keyword_message($eventkey, "image", $keyword)) {
+            $flag = true;
+            $this->request_image($openid, '2', $eventkey, $keyword); //直接在查询文本回复时使用客服接口
+        }
+        if (!$flag) //如果该二维码没有对应的关注推送信息
+        {
+            $content = new Text( "嘟......您的留言已经进入自动留声机，小横横回来后会努力回复你的~\n您也可以拨打0579-89600055立刻接通小横横。");
+//            $content->content = "嘟......您的留言已经进入自动留声机，小横横回来后会努力回复你的~\n您也可以拨打0579-89600055立刻接通小横横。";
+//            $this->app->staff->message($content)->by('1001@u_hengdian')->to($openid)->send();
+            $this->app->customer_service->message($content)->to($openid)->send();
+//            }
+        }
+
+
+//        return $content;
+    }
+
+
+    /**
+     * @param $openid
+     * @param $type 1:关注    2：关键字
+     * @param $eventkey
+     * @param $keyword
+     */
+
+    private function request_txt($openid, $type, $eventkey, $keyword)
+    {
+//        $app = app('wechat');
+        switch ($type) {
+            case 1:
+                $row = WechatTxt::focusPublished($eventkey)
+                    ->orderBy('id', 'desc')
+                    ->get();
+                break;
+            case 2:
+                $keyword = $this->check_keywowrd($keyword);
+                $row = WechatTxt::whereRaw('FIND_IN_SET("' . $keyword . '", keyword)')
+                    ->usagePublished($eventkey)
+                    ->orderBy('id', 'desc')
+                    ->get();
+                break;
+        }
+        foreach ($row as $result) {
+            $content = new Text($result->content);
+            $this->app->customer_service->message($content)->to($openid)->send();
+        }
+    }
+
+    /*
+* 检查关键字中是否包含可回复字符
+* @param    string       $text        客人输入关键字
+* @return   string       $result      到数据库查（WX_Request_Keyword）询输出关键字
+*/
+    private function check_keywowrd($text)
+    {
+        $flag = "不包含";
+        $row = DB::table('wx_request_keyword')
+            ->orderBy('id', 'asc')->get();
+
+        foreach ($row as $result) {
+            if (@strstr($text, $result->keyword) != '') {
+                $flag = $result->keyword;
+                break;
+            }
+        }
+        return $flag;
+    }
+
+
+    /**
+     * 检查关注是否有对应二维码的消息回复（图文、语音、文字、图片）
+     * @param $eventkey
+     * @param $type ：   news:图文    txt:文字      voice:语音     image:图片
+     * @param $focus :   1:关注    0：不关注
+     * @return boolkey
+     */
+    private function check_eventkey_message($eventkey, $type, $focus)
+    {
+//        $db = new DB();
+        $flag = false;
+        switch ($type) {
+            case "news":
+                $row_news = WechatArticle::focusPublished($eventkey)->first();
+
+                if ($row_news) {
+                    $flag = true;
+                }
+                break;
+            case "txt":
+                $row_txt = WechatTxt::focusPublished($eventkey)->first();
+
+                if ($row_txt) {
+                    $flag = true;
+                }
+                break;
+            case "voice":
+                $row_voice = WechatVoice::focusPublished($eventkey)->first();
+
+                if ($row_voice) {
+                    $flag = true;
+                }
+                break;
+            case "image":
+                $row_images = WechatImage:: focusPublished($eventkey)->first();
+
+                if ($row_images) {
+                    $flag = true;
+                }
+                break;
+            default:
+                break;
+
+        }
+        return $flag;
+    }
+
+
+    /**
+     * 检查关键字是否有对应的消息回复（图文、语音、文字、图片）
+     * @param $eventkey
+     * @param $type ：   news:图文    txt:文字      voice:语音
+     * @return boolkey
+     */
+    private function check_keyword_message($eventkey, $type, $keyword)
+    {
+//        $db = new DB();
+        $keyword = $this->check_keywowrd($keyword);
+        $flag = false;
+        switch ($type) {
+            case "news":
+                $row_news = WechatArticle::whereRaw('FIND_IN_SET("' . $keyword . '", keyword)')
+                    ->usagePublished($eventkey)
+                    ->first();
+
+                if ($row_news) {
+                    $flag = true;
+                }
+                break;
+            case "txt":
+                $row_txt = WechatTxt::whereRaw('FIND_IN_SET("' . $keyword . '", keyword)')
+                    ->usagePublished($eventkey)
+                    ->first();
+
+                if ($row_txt) {
+                    $flag = true;
+                }
+                break;
+            case "voice":
+                $row_voice = WechatVoice::whereRaw('FIND_IN_SET("' . $keyword . '", keyword)')
+                    ->usagePublished($eventkey)
+                    ->first();
+
+                if ($row_voice) {
+                    $flag = true;
+                }
+                break;
+            case "image":
+                $row_images = WechatImage::whereRaw('FIND_IN_SET("' . $keyword . '", keyword)')
+                    ->usagePublished($eventkey)
+                    ->first();
+                if ($row_images) {
+                    $flag = true;
+                }
+                break;
+            default:
+                break;
+
+        }
+        return $flag;
+    }
+
+    /*
+    * 回复Voice
+    *$focus:1（关注）；2（关键字）
+    */
+    public function request_voice($openid, $type, $eventkey, $keyword)
+    {
+        switch ($type) {
+            case '1':
+                $row = WechatVoice::focusPublished($eventkey)
+                    ->orderBy('id', 'desc')
+                    ->get();
+
+                break;
+            case "2":
+                $keyword = $this->check_keywowrd($keyword);
+                $row = WechatVoice::whereRaw('FIND_IN_SET("' . $keyword . '", keyword)')
+                    ->usagePublished($eventkey)
+                    ->orderBy('id', 'desc')
+                    ->get();
+                break;
+        }
+        foreach ($row as $result) {
+            $voice = new Voice($result->media_id);
+            $this->app->customer_service->message($voice)->to($openid)->send();
+        }
+    }
+
+    /*
+   * 回复Image
+   *$focus:1（关注）；2（关键字）
+   */
+    public function request_image($openid, $type, $eventkey, $keyword)
+    {
+        switch ($type) {
+            case '1':
+                $row = WechatImage::focusPublished($eventkey)
+                    ->orderBy('id', 'desc')
+                    ->get();
+
+                break;
+            case "2":
+                $keyword = $this->check_keywowrd($keyword);
+
+                $row = WechatImage::whereRaw('FIND_IN_SET("' . $keyword . '", keyword)')
+                    ->usagePublished($eventkey)
+                    ->orderBy('id', 'desc')
+                    ->get();
+                break;
+        }
+        foreach ($row as $result) {
+            $image = new Image($result->media_id);
+//            $image->media_id = $result->media_id;
+//            $this->app->staff->message($image)->by('1001@u_hengdian')->to($openid)->send();
+            $this->app->customer_service->message($content)->to($openid)->send();
+        }
+    }
+
+
+
 
     /**
      * 推送图文
