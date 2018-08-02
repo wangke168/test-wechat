@@ -22,23 +22,20 @@ class TestController extends Controller
 
     public function response_test1()
     {
-
-        DB::table('wx_recevice_txt')
-            ->insert(['wx_openid' => 'sa', 'content' => 'asdasd']);
-
-  /*      $past_time = Carbon::now()->subSeconds(30);
-        $row = DB::table('wx_article_hits')
-            ->where('article_id', '1493')
-            ->where('wx_openid', 'sd')
-            ->where('adddate', '>', $past_time)
-            ->orderBy('id', 'desc')
+        $openid='o5--l1Pl9YZWPj9n342XbdpJdG8w';
+        $row = DB::table('wx_user_info')
+            ->where('wx_openid', $openid)
             ->first();
+        if (!$row)
+        {
+            DB::table('wx_user_info')
+                ->insert(['wx_openid' => $openid, 'eventkey' => '','subscribe' => '1', 'adddate' => Carbon::now(), 'scandate' => Carbon::now()]);
 
-        if ($row) {
-            return '1';
-        } else {
-            return '2';
-        }*/
+        }
+        $row = DB::table('wx_user_info')
+            ->where('wx_openid', $openid)
+            ->first();
+        return $row;
 
     }
     private function time_check($id, $openid)
