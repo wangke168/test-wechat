@@ -35,7 +35,7 @@ class TestController extends Controller
         $row = DB::table('wx_user_info')
             ->where('wx_openid', $openid)
             ->first();
-        return $row;
+        dd ($row);
 
     }
     private function time_check($id, $openid)
