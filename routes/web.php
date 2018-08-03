@@ -18,12 +18,19 @@ Route::any('/wechat', 'WeChatController@serve');
 
 Route::get('/test', 'TestController@response_test1');
 
-Route::get('/api','ApiController@api');
 
+//输出token
+Route::get('/api','ApiController@api');
 Route::get('/token','ApiController@token');
 
+
+//菜单相关
 Route::get('/menu','MenuController@menu');
 Route::get('/menu/add','MenuController@add');
 
 //跳转
 Route::get('/jump/{id}/{openid}','LinkJumpController@index');
+
+//订单相关
+Route::get('/ordersend/{sellid}/{openid}','Order\OrderController@send');
+Route::get('/orderconfrim/{sellid}/{openid}','Order\OrderController@confrim');

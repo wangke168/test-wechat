@@ -14,28 +14,32 @@ class TestController extends Controller
 {
     public $weObj;
     public $config;
-
+    public $templateId;
     public function __construct()
     {
         $this->weObj = app('wechat.official_account');
+        $this->templateId=env('TEST_TEMPLATEID_TICKET');
     }
 
     public function response_test1()
     {
         $openid='o5--l1Pl9YZWPj9n342XbdpJdG8w';
-        $row = DB::table('wx_user_info')
-            ->where('wx_openid', $openid)
-            ->first();
-        if (!$row)
-        {
-            DB::table('wx_user_info')
-                ->insert(['wx_openid' => $openid, 'eventkey' => '','subscribe' => '1', 'adddate' => Carbon::now(), 'scandate' => Carbon::now()]);
 
-        }
-        $row = DB::table('wx_user_info')
-            ->where('wx_openid', $openid)
-            ->first();
-        dd ($row);
+
+        $this->weObj->template_message->send([
+            'touser' => $openid,
+            'template_id' => $this->templateId,
+            'url' => 'http://www.baidu.com',
+            'data' => [
+                "first" => ['first', "#000000"],
+                "keyword1" => ['sellid', "#173177"],
+                "keyword2" => ['date', "#173177"],
+                "keyword3" => ['days', "#173177"],
+                "keyword4" => ['roomtype', "#173177"],
+                "keyword5" => ['numbers', "#173177"],
+                "remark" => ['remark', "#000000"],
+            ],
+        ]);
 
     }
     private function time_check($id, $openid)
