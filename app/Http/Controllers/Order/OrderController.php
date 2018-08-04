@@ -289,8 +289,8 @@ class OrderController extends Controller
         $this->app->template_message->send([
             'touser' => $userId,
             'template_id' => $templateId,
-            'url' => 'http://www.baidu.com',
-            'data' => $url,
+            'url' => $url,
+            'data' => $content,
         ]);
 
 
