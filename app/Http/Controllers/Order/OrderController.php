@@ -216,15 +216,24 @@ class OrderController extends Controller
 
                 $templateId = env('TEST_TEMPLATEID_TICKET');
 
-                $data = array(
-                    "first" => array($first, "#000000"),
-                    "keyword1" => array($sellid, "#173177"),
-                    "keyword2" => array($date, "#173177"),
-                    "keyword3" => array($ticket, "#173177"),
-                    "keyword4" => array($numbers, "#173177"),
-                    "keyword5" => array($ticketorder, "#173177"),
-                    "remark" => array($remark, "#000000"),
-                );
+//                $data = array(
+//                    "first" => array($first, "#000000"),
+//                    "keyword1" => array($sellid, "#173177"),
+//                    "keyword2" => array($date, "#173177"),
+//                    "keyword3" => array($ticket, "#173177"),
+//                    "keyword4" => array($numbers, "#173177"),
+//                    "keyword5" => array($ticketorder, "#173177"),
+//                    "remark" => array($remark, "#000000"),
+//                );
+                $date=[
+                    "first" => [$first, "#000000"],
+                    "keyword1" => [$sellid, "#173177"],
+                    "keyword2" => [$date, "#173177"],
+                    "keyword3" => [$ticket, "#173177"],
+                    "keyword4" => [$numbers, "#173177"],
+                    "keyword5" => [$ticketorder, "#173177"],
+                    "remark" => ['$remark', "#000000"],
+                ];
 
 //                $content = $second->second_info_send('ticket', $ticket, $openid, $sellid);
 
@@ -300,19 +309,11 @@ class OrderController extends Controller
 //        $this->notice->uses($templateId)->withUrl($url)->andData($data)->andReceiver($userId)->send();
 
         $this->app->template_message->send([
-            'touser' => $userId,
+            'touser' => $openid,
             'template_id' => $templateId,
-            'url' => $url,
-            'data' => [
-                "first" => [$first, "#000000"],
-                "keyword1" => [$sellid, "#173177"],
-                "keyword2" => [$date, "#173177"],
-                "keyword3" => [$days, "#173177"],
-                "keyword4" => [$roomtype, "#173177"],
-                "keyword5" => [$numbers, "#173177"],
-                "remark" => [$remark, "#000000"],
-        ],
-    ]);
+            'url' => 'http://www.baidu.com',
+            'data' => $date,
+        ]);
 
 
 
