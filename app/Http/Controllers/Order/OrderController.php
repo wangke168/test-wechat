@@ -204,7 +204,7 @@ class OrderController extends Controller
                     "keyword2" => [$date, "#173177"],
                     "keyword3" => [$ticket, "#173177"],
                     "keyword4" => [$numbers, "#173177"],
-                    "keyword5" => [$ticketorder, "#173177"],
+                    "keyword5" => [$ticketorder, "#F00"],
                     "remark" => [$remark, "#000000"],
                 ];
             }
