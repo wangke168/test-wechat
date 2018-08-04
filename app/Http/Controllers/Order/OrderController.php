@@ -24,8 +24,9 @@ class OrderController extends Controller
 
     public function send($sellid, $openid)
     {
-        return $this->check_order($sellid);
+
         if ($this->check_order($sellid)) {
+            return '22';
 //            $this->dispatch(new SendOrderQueue($sellid,$openid));
 
             $this->insert_order($openid, $sellid);
