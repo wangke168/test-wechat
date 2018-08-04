@@ -18,24 +18,14 @@ class OrderController extends Controller
     public function __construct()
     {
         $this->app = app('wechat.official_account');
-
-//        $this->usage = new Usage();
     }
 
     public function send($sellid, $openid)
     {
-
         if ($this->check_order($sellid)) {
-
-//            $this->dispatch(new SendOrderQueue($sellid,$openid));
-
-//            $this->insert_order($openid, $sellid);
+            $this->insert_order($openid, $sellid);
             $this->PostOrderInfo($openid, $sellid);
-
-//            $this->check_qy($sellid, $openid);
-
         }
-
     }
 
     private function check_qy($sellid, $openid = null)
@@ -184,9 +174,7 @@ class OrderController extends Controller
         $hotel = "";
         $ticket = "";
         $url = env('ORDER_URL', '');
-//        $json = file_get_contents("http://ydpt.hdymxy.com/searchorder_json.aspx?sellid=" . $sellid);
         $json = file_get_contents($url . "searchorder_json.aspx?sellid=" . $sellid);
-//        $json = file_get_contents("http://e.hengdianworld.com/searchorder_json.aspx?sellid=" . $sellid);
         $data = json_decode($json, true);
 
         $ticketcount = count($data['ticketorder']);
@@ -219,16 +207,8 @@ class OrderController extends Controller
 
                 $templateId = env('TEST_TEMPLATEID_TICKET');
 
-//                $data = array(
-//                    "first" => array($first, "#000000"),
-//                    "keyword1" => array($sellid, "#173177"),
-//                    "keyword2" => array($date, "#173177"),
-//                    "keyword3" => array($ticket, "#173177"),
-//                    "keyword4" => array($numbers, "#173177"),
-//                    "keyword5" => array($ticketorder, "#173177"),
-//                    "remark" => array($remark, "#000000"),
-//                );
-                $date=[
+
+                $content=[
                     "first" => [$first, "#000000"],
                     "keyword1" => [$sellid, "#173177"],
                     "keyword2" => [$date, "#173177"],
@@ -238,11 +218,9 @@ class OrderController extends Controller
                     "remark" => [$remark, "#000000"],
                 ];
 
-//                $content = $second->second_info_send('ticket', $ticket, $openid, $sellid);
-
             }
         }
-        if ($inclusivecount <> 0) {
+  /*      if ($inclusivecount <> 0) {
             $ticket_id = 2;
 
             $first = $data['inclusiveorder'][0]['name'] . "，您好，您已经成功预订组合套餐。\n";
@@ -268,7 +246,6 @@ class OrderController extends Controller
                     "keyword5" => array($hotel, "#173177"),
                     "remark" => array($remark, "#000000"),
                 );
-//                $content = $second->second_info_send('inclusive', $ticket . $hotel, $openid, $sellid);
             }
         }
         if ($hotelcount <> 0) {
@@ -298,9 +275,9 @@ class OrderController extends Controller
                     "keyword5" => array($numbers, "#173177"),
                     "remark" => array($remark, "#000000"),
                 );
-//                $content = $second->second_info_send('hotel', $hotel, $openid, $sellid);
+
             }
-        }
+        }*/
 
 
         DB::table('wx_order_detail')
@@ -308,21 +285,14 @@ class OrderController extends Controller
                 'arrivedate' => $date, 'ticket_id' => $ticket_id, 'ticket' => $ticket,
                 'hotel' => $hotel, 'eventkey' => $eventkey, 'numbers' => $numbers, 'adddate' => Carbon::today()]);
 
-//        $this->notice->uses($templateId)->withUrl($url)->andData($data)->andReceiver($userId)->send();
-//        $this->notice->uses($templateId)->withUrl($url)->andData($data)->andReceiver($userId)->send();
 
         $this->app->template_message->send([
-            'touser' => $openid,
+            'touser' => $userId,
             'template_id' => $templateId,
             'url' => 'http://www.baidu.com',
-            'data' => $date,
+            'data' => $url,
         ]);
 
 
-
-        /*  if($content) {
-              $this->app->staff->message($content)->to($openid)->send();
-          }*/
-//        $app->staff->message($news)->to($openid)->send();
     }
 }
