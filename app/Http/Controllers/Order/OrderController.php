@@ -29,7 +29,7 @@ class OrderController extends Controller
 
 //            $this->dispatch(new SendOrderQueue($sellid,$openid));
 
-            $this->insert_order($openid, $sellid);
+//            $this->insert_order($openid, $sellid);
             $this->PostOrderInfo($openid, $sellid);
 
 //            $this->check_qy($sellid, $openid);
