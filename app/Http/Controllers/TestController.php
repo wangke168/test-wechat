@@ -73,7 +73,7 @@ class TestController extends Controller
                     "keyword3" => [$ticket, "#173177"],
                     "keyword4" => [$numbers, "#173177"],
                     "keyword5" => [$ticketorder, "#173177"],
-                    "remark" => ['$remark', "#000000"],
+                    "remark" => [$remark, "#000000"],
                 ];
 
 //                $content = $second->second_info_send('ticket', $ticket, $openid, $sellid);
