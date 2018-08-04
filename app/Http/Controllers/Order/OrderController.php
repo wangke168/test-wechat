@@ -26,7 +26,7 @@ class OrderController extends Controller
     {
 
         if ($this->check_order($sellid)) {
-            return '22';
+
 //            $this->dispatch(new SendOrderQueue($sellid,$openid));
 
             $this->insert_order($openid, $sellid);
@@ -35,10 +35,7 @@ class OrderController extends Controller
 //            $this->check_qy($sellid, $openid);
 
         }
-        else
-        {
-            return 'sa';
-        }
+
     }
 
     private function check_qy($sellid, $openid = null)
