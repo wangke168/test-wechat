@@ -35,6 +35,10 @@ class OrderController extends Controller
 //            $this->check_qy($sellid, $openid);
 
         }
+        else
+        {
+            return 'sa';
+        }
     }
 
     private function check_qy($sellid, $openid = null)
