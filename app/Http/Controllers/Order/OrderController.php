@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
@@ -154,21 +155,16 @@ class OrderController extends Controller
         }
         DB::table('wx_order_send')
             ->insert(['wx_openid' => $openid, 'sellid' => $sellid, 'eventkey' => $eventkey, 'focusdate' => $focusdate]);
-
     }
 
     private function PostOrderInfo($openid, $sellid)
     {
-//        $second = new SecondSell();
         $usage = new Usage();
         $eventkey = '';
 
         if ($usage->get_openid_info($openid)) {
             $eventkey = $usage->get_openid_info($openid)->eventkey;
         }
-        $userId = $openid;
-        $url = 'https://wechat.hdyuanmingxinyuan.com/article/detail?id=1482';
-        $color = '#FF0000';
 
         $ticket_id = "";
         $hotel = "";
@@ -178,10 +174,7 @@ class OrderController extends Controller
         $data = json_decode($json, true);
 
         $ticketcount = count($data['ticketorder']);
-        $inclusivecount = count($data['inclusiveorder']);
-        $hotelcount = count($data['hotelorder']);
 
-        $i = 0;
         if ($ticketcount <> 0) {
             $ticket_id = 1;
 
@@ -191,7 +184,6 @@ class OrderController extends Controller
             $date = $data['ticketorder'][0]['date2'];
             $ticket = $data['ticketorder'][0]['ticket'];
             $numbers = $data['ticketorder'][0]['numbers'];
-
             $flag = $data['ticketorder'][0]['flag'];
 
             if ($flag != "未支付" || $flag != "已取消") {
@@ -204,11 +196,9 @@ class OrderController extends Controller
                     $remark = "\n在检票口出示此识别码可直接进入景区。\n如有疑问，请致电0579-89600055。";
                 }
 
-
                 $templateId = env('TEST_TEMPLATEID_TICKET');
 
-
-                $content=[
+                $content = [
                     "first" => [$first, "#000000"],
                     "keyword1" => [$sellid, "#173177"],
                     "keyword2" => [$date, "#173177"],
@@ -217,82 +207,18 @@ class OrderController extends Controller
                     "keyword5" => [$ticketorder, "#173177"],
                     "remark" => [$remark, "#000000"],
                 ];
-
             }
         }
-  /*      if ($inclusivecount <> 0) {
-            $ticket_id = 2;
-
-            $first = $data['inclusiveorder'][0]['name'] . "，您好，您已经成功预订组合套餐。\n";
-            $sellid = $data['inclusiveorder'][0]['sellid'];
-            $name = $data['inclusiveorder'][0]['name'];
-            $date = $data['inclusiveorder'][0]['date2'];
-            $ticket = $data['inclusiveorder'][0]['ticket'];
-            $hotel = $data['inclusiveorder'][0]['hotel'];
-            $flag = $data['inclusiveorder'][0]['flag'];
-
-            if ($flag != "未支付" || $flag != "已取消") {
-
-                $remark = "人数：" . $data['inclusiveorder'][0]['numbers'] . "\n\n预达日凭身份证到酒店前台取票。如有疑问，请致电0579-89600055。";
-
-                $templateId = env('TEMPLATEID_PACKAGES');
-
-                $data = array(
-                    "first" => array($first, "#000000"),
-                    "keyword1" => array($sellid, "#173177"),
-                    "keyword2" => array($name, "#173177"),
-                    "keyword3" => array($date, "#173177"),
-                    "keyword4" => array($ticket, "#173177"),
-                    "keyword5" => array($hotel, "#173177"),
-                    "remark" => array($remark, "#000000"),
-                );
-            }
-        }
-        if ($hotelcount <> 0) {
-            $ticket_id = 3;
-            $sellid = $data['hotelorder'][0]['sellid'];
-            $name = $data['hotelorder'][0]['name'];
-            $date = $data['hotelorder'][0]['date2'];
-            $days = $data['hotelorder'][0]['days'];
-            $hotel = $data['hotelorder'][0]['hotel'];
-            $numbers = $data['hotelorder'][0]['numbers'];
-            $roomtype = $data['hotelorder'][0]['roomtype'];
-            $flag = $data['hotelorder'][0]['flag'];
-
-            if ($flag != "未支付" || $flag != "已取消") {
-
-                $first = "        " . $name . "，您好，您已经成功预订" . $hotel . "，酒店所有工作人员静候您的光临。\n";
-                $remark = "\n        预达日凭身份证到酒店前台办理入住办手续。\n如有疑问，请致电0579-89600055。";
-
-                $templateId = env('TEMPLATEID_HOTEL');
-
-                $data = array(
-                    "first" => array($first, "#000000"),
-                    "keyword1" => array($sellid, "#173177"),
-                    "keyword2" => array($date, "#173177"),
-                    "keyword3" => array($days, "#173177"),
-                    "keyword4" => array($roomtype, "#173177"),
-                    "keyword5" => array($numbers, "#173177"),
-                    "remark" => array($remark, "#000000"),
-                );
-
-            }
-        }*/
-
-
         DB::table('wx_order_detail')
             ->insert(['sellid' => $sellid, 'wx_openid' => $openid, 'k_name' => $name,
                 'arrivedate' => $date, 'ticket_id' => $ticket_id, 'ticket' => $ticket,
                 'hotel' => $hotel, 'eventkey' => $eventkey, 'numbers' => $numbers, 'adddate' => Carbon::today()]);
 
-
         $this->app->template_message->send([
-            'touser' => $userId,
+            'touser' => $openid,
             'template_id' => $templateId,
-            'url' => $url,
+            'url' => 'https://wechat.hdyuanmingxinyuan.com/article/detail?id=1482',
             'data' => $content,
         ]);
-
-
     }
 }
