@@ -23,7 +23,7 @@ class TestController extends Controller
 
     public function response_test1()
     {
-        $date = Carbon\Carbon::now()->toDateString();
+        $date = Carbon::now()->toDateString();
         $zone = new \App\WeChat\Zone();
         $rows_zone = DB::table('zone')
             ->orderBy('priority', 'asc')
