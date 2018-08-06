@@ -103,7 +103,7 @@ if ($article->pyq_title) {
         'onMenuShareAppMessage',
         'onMenuShareQQ',
         'onMenuShareWeibo',
-        'onMenuShareQZone'), false) ?>);
+        'onMenuShareQZone'), true) ?>);
 
     wx.ready(function () {
 
