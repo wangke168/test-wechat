@@ -88,7 +88,7 @@ if ($article->pyq_pic == '') {
 
 
 $url = \Illuminate\Support\Facades\URL::current() . '?id=' . $id;
-$resp_url = 'http://e.hengdianworld.com/WeixinOpenId.aspx?nexturl=' . $url;
+$resp_url = 'http://ydpt.hdyuanmingxinyuan.com/WeixinOpenId.aspx?nexturl=' . $url;
 
 if ($article->pyq_title) {
     $pyq_title = $article->pyq_title;
@@ -99,7 +99,7 @@ if ($article->pyq_title) {
 
 <script src="//res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
-    wx.config(<?php echo $js->config(array('onMenuShareTimeline',
+    wx.config(<?php echo $app->jssdk->buildConfig(array('onMenuShareTimeline',
         'onMenuShareAppMessage',
         'onMenuShareQQ',
         'onMenuShareWeibo',
