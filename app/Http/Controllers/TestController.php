@@ -28,7 +28,13 @@ class TestController extends Controller
             ->where('zone_id', '6')
             ->orderBy('priority', 'asc')
             ->get();
-        return ($shows);
+        if (empty($shows))
+        {
+            return '1';
+        }
+        else{
+            return '2';
+        }
         $date = Carbon::now()->toDateString();
         $zone = new \App\WeChat\Zone();
         $rows_zone = DB::table('zone')
