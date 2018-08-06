@@ -34,3 +34,6 @@ Route::get('/jump/{id}/{openid}','LinkJumpController@index');
 //订单相关
 Route::get('/ordersend/{sellid}/{openid}','Order\OrderController@send');
 Route::get('/orderconfrim/{sellid}/{openid}','Order\OrderController@confrim');
+
+//文章管理
+Route::get('/article/detail', 'ArticlesController@detail');
