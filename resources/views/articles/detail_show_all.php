@@ -69,6 +69,7 @@
 
     <link href="{{asset('lib/common.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{asset('lib/show.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset('css/mbcss.css')}}" rel="stylesheet" type="text/css"/>
 
 </head>
 <body class="mobile articles show">
