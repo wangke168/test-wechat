@@ -28,7 +28,7 @@ class TestController extends Controller
             ->where('zone_id', '6')
             ->orderBy('priority', 'asc')
             ->get();
-        if ($shows)
+        if (empty($shows))
         {
             return '1';
         }
