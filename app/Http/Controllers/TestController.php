@@ -23,6 +23,12 @@ class TestController extends Controller
 
     public function response_test1()
     {
+
+        $shows = DB::table('zone_show_info')
+            ->where('zone_id', '6')
+            ->orderBy('priority', 'asc')
+            ->get();
+        return ($shows);
         $date = Carbon::now()->toDateString();
         $zone = new \App\WeChat\Zone();
         $rows_zone = DB::table('zone')
@@ -32,10 +38,10 @@ class TestController extends Controller
 
 
             $shows = DB::table('zone_show_info')
-                ->where('zone_id', $row_zone->id)
+                ->where('zone_id', '6')
                 ->orderBy('priority', 'asc')
                 ->get();
-            if($shows->id<>''){
+            if($shows){
                 echo '<tr><td class="zone">' . $row_zone->zone_name . '景区</td></tr>';
               /*  foreach ($shows as $show) {
                     //获取现在所处时间段
