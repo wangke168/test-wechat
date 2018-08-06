@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="zh-hans">
+<head id="Head2">
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no">
     <title>横店圆明新园演艺时间表</title>
     <meta name="keywords" content="横店圆明新园,演艺秀时间表">
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+    
+    <link href="{{asset('lib/common.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset('lib/show.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset('css/mbcss.css')}}" rel="stylesheet" type="text/css"/>
     <script type="text/javascript">function resetImgHeight(A, e) {
             var t, i, a, o = 0;
             for (t = 0, i = A.length; t < i; t++)A[t].src = e, a = A[t].clientWidth, A[t].attributes["data-ratio"] && (o = A[t].attributes["data-ratio"].value || 0, o = parseFloat(o)), o && (A[t].style.height = a * o + "px")
@@ -67,9 +70,7 @@
             }, window.resetImgQuantity = resetImgQuantity
         }()</script>
 
-    <link href="{{asset('lib/common.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{asset('lib/show.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{asset('css/mbcss.css')}}" rel="stylesheet" type="text/css"/>
+
 
 </head>
 <body class="mobile articles show">
