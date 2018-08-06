@@ -37,7 +37,7 @@ class TestController extends Controller
                 ->get();
             if($shows){
                 echo '<tr><td class="zone">' . $row_zone->zone_name . '景区</td></tr>';
-                foreach ($shows as $show) {
+              /*  foreach ($shows as $show) {
                     //获取现在所处时间段
                     $rows_show = DB::table('zone_show_time')
                         ->whereDate('startdate', '<=', $date)
@@ -62,7 +62,7 @@ class TestController extends Controller
                             }
                         }
                     }
-                }
+                }*/
             }
         }
     }
