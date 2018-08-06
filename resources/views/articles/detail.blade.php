@@ -99,6 +99,7 @@ if ($article->pyq_title) {
 
 <script src="//res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
+    <?php $app = app('wechat.official_account');?>
     wx.config(<?php echo $app->jssdk->buildConfig(array('onMenuShareTimeline',
         'onMenuShareAppMessage',
         'onMenuShareQQ',

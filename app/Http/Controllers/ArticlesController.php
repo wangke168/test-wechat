@@ -22,7 +22,6 @@ class ArticlesController extends Controller
     public function __construct()
     {
         $this->app = app('wechat.official_account');
-
 //        $this->js = $this->app->js;
         $this->count = new Count();
         $this->usage = new Usage();
@@ -71,9 +70,6 @@ class ArticlesController extends Controller
      */
     public function detail(Request $request)
     {
-
-    return($this->app->jssdk->buildConfig(array('onMenuShareQQ', 'onMenuShareWeibo'), true));
-
         $type = $request->input('type');
         $id = $request->input('id');
         $wxnumber = $request->input('wxnumber');
