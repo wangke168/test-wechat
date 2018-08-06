@@ -156,7 +156,7 @@
 </div>
 <div id="bottom">
     <div style="color:#fff;"><img src="{{asset('images/tel.png')}}" width="15" height="15" border=0/>
-        热线电话：<a href="tel:057989600300"> <span style="color: white"> 0579-89600300</span></a>
+        热线电话：<a href="tel:057989600055"> <span style="color: white"> 0579-89600055</span></a>
     </div>
     <div>©2013-2017 横店圆明新园 版权所有</div>
 </div>

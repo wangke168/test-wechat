@@ -9,7 +9,7 @@ use EasyWeChat\Kernel\Messages\Text;
 use App\Models\WechatArticle;
 use EasyWeChat\Kernel\Messages\News;
 use EasyWeChat\Kernel\Messages\NewsItem;
-use App\WeChat\Count;
+use App\WeChat\Zone;
 class TestController extends Controller
 {
     public $weObj;
@@ -23,80 +23,48 @@ class TestController extends Controller
 
     public function response_test1()
     {
-        $url = env('ORDER_URL', '');
-//        $json = file_get_contents("http://ydpt.hdymxy.com/searchorder_json.aspx?sellid=" . $sellid);
-        $json = file_get_contents($url . "searchorder_json.aspx?sellid=V1808040075");
+        $date = Carbon\Carbon::now()->toDateString();
+        $zone = new \App\WeChat\Zone();
+        $rows_zone = DB::table('zone')
+            ->orderBy('priority', 'asc')
+            ->get();
+        foreach ($rows_zone as $row_zone) {
 
-        $openid='o5--l1Pl9YZWPj9n342XbdpJdG8w';
-        $data = json_decode($json, true);
 
-        $ticketcount = count($data['ticketorder']);
-        $i = 0;
-        if ($ticketcount <> 0) {
-            $ticket_id = 1;
+            $shows = DB::table('zone_show_info')
+                ->where('zone_id', $row_zone->id)
+                ->orderBy('priority', 'asc')
+                ->get();
+            if($shows){
+                echo '<tr><td class="zone">' . $row_zone->zone_name . '景区</td></tr>';
+                foreach ($shows as $show) {
+                    //获取现在所处时间段
+                    $rows_show = DB::table('zone_show_time')
+                        ->whereDate('startdate', '<=', $date)
+                        ->whereDate('enddate', '>=', $date)
+                        ->where('zone_id', $row_zone->id)
+                        ->where('show_id', $show->id)
+                        ->get();
+                    if ($rows_show) {
 
-            $name = $data['ticketorder'][0]['name'];
-            $first = $data['ticketorder'][0]['name'] . "，您好，您已经成功预订门票。\n";
-            $sellid = $data['ticketorder'][0]['sellid'];
-            $date = $data['ticketorder'][0]['date2'];
-            $ticket = $data['ticketorder'][0]['ticket'];
-            $numbers = $data['ticketorder'][0]['numbers'];
+                        foreach ($rows_show as $row_show) {
+                            if ($zone->get_correct_show($row_show->id, $row_show->show_id, $date)) {
+                                $show_name = $zone->get_project_info($row_show->show_id)->show_name;
+                                if ($row_show->se_name) {
+                                    $show_name = $row_show->se_name . '(' . $show_name . ')';
+                                }
+                                echo '<tr><td class="showname">' . $show_name . '</td></tr>';
+                                echo '<tr><td class="showtime">' . str_replace(',', ' | ', $row_show->show_time) . '</td></tr>';
 
-            $flag = $data['ticketorder'][0]['flag'];
-
-            if ($flag != "未支付" || $flag != "已取消") {
-
-                if ($data['ticketorder'][0]['ticket'] == '2018年8点年卡票' || $data['ticketorder'][0]['ticket'] == '2018年两馆年卡票' || $data['ticketorder'][0]['ticket'] == '2018年秋冬苑年卡票' || $data['ticketorder'][0]['ticket'] == '2018年春苑年卡票' || $data['ticketorder'][0]['ticket'] == '2018年夏苑年卡票') {
-                    $ticketorder = "注意：年卡预订成功三天后开始生效";
-                    $remark = "\n在检票口出示本人身份证可直接进入景区。\n如有疑问，请致电0579-89600055。";
-                } else {
-                    $ticketorder = $data['ticketorder'][0]['code'];
-                    $remark = "\n在检票口出示此识别码可直接进入景区。\n如有疑问，请致电0579-89600055。";
+                                if ($row_show->remark) {
+                                    echo '<tr><td class="showdate">' . $row_show->remark . '</td></tr>';
+                                }
+                            }
+                        }
+                    }
                 }
-
-
-                $templateId = env('TEST_TEMPLATEID_TICKET');
-
-//                $data = array(
-//                    "first" => array($first, "#000000"),
-//                    "keyword1" => array($sellid, "#173177"),
-//                    "keyword2" => array($date, "#173177"),
-//                    "keyword3" => array($ticket, "#173177"),
-//                    "keyword4" => array($numbers, "#173177"),
-//                    "keyword5" => array($ticketorder, "#173177"),
-//                    "remark" => array($remark, "#000000"),
-//                );
-                $date=[
-                    "first" => [$first, "#000000"],
-                    "keyword1" => [$sellid, "#173177"],
-                    "keyword2" => [$date, "#173177"],
-                    "keyword3" => [$ticket, "#173177"],
-                    "keyword4" => [$numbers, "#173177"],
-                    "keyword5" => [$ticketorder, "#173177"],
-                    "remark" => [$remark, "#000000"],
-                ];
-
-//                $content = $second->second_info_send('ticket', $ticket, $openid, $sellid);
-
             }
         }
-        /*$date=[
-            "first" => ['first1', "#000000"],
-            "keyword1" => ['sellid', "#173177"],
-            "keyword2" => ['date', "#173177"],
-            "keyword3" => ['days', "#173177"],
-            "keyword4" => ['roomtype', "#173177"],
-            "keyword5" => ['numbers', "#173177"],
-            "remark" => ['remark', "#000000"],
-        ];*/
-
-        $this->weObj->template_message->send([
-            'touser' => $openid,
-            'template_id' => $this->templateId,
-            'url' => 'http://www.baidu.com',
-            'data' => $date,
-        ]);
-
     }
     private function time_check($id, $openid)
     {
