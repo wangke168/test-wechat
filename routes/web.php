@@ -37,3 +37,5 @@ Route::get('/orderconfrim/{sellid}/{openid}','Order\OrderController@confrim');
 
 //文章管理
 Route::get('/article/detail', 'ArticlesController@detail');
+//预览
+Route::get('/article/review', 'ArticlesController@detail_review');
