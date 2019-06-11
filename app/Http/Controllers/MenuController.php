@@ -165,7 +165,7 @@ class MenuController extends Controller
 
 //        $this->menu->add($buttons, $matchRule);
 
-        $this->menu->creatagidte($buttons);
+        $this->menu->create($buttons);
 
     }
 
