@@ -36,11 +36,11 @@ class TestController extends Controller
                 break;
             case 'add':
                 $openIds = ['o5--l1Pl9YZWPj9n342XbdpJdG8w'];
-                $this->weObj->user_tag->tagUsers($openIds, '2');
+                $this->weObj->user_tag->tagUsers($openIds, '100');
                 break;
             case 'del':
                 $openIds = ['o5--l1Pl9YZWPj9n342XbdpJdG8w'];
-                $this->weObj->user_tag->untagUsers($openIds, '2');
+                $this->weObj->user_tag->untagUsers($openIds, '100');
                 break;
             default:
                 return 'sadasd';
