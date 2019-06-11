@@ -164,7 +164,8 @@ class MenuController extends Controller
                 ];*/
 
 //        $this->menu->add($buttons, $matchRule);
-        $this->menu->create($buttons);
+
+        $this->menu->creatagidte($buttons);
 
     }
 
@@ -248,7 +249,7 @@ class MenuController extends Controller
             "client_platform_type" => ""
         ];
 
-        $this->menu->add($buttons, $matchRule);
+        $this->menu->create($buttons, $matchRule);
 //        $this->menu->add($buttons);
 
     }
