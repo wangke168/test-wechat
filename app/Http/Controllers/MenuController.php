@@ -93,7 +93,7 @@ class MenuController extends Controller
                     [
                         "type" => "click",
                         "name" => "品牌赛事",
-                        "key" => "7"
+                        "key" => "77"
                     ],
                     [
                         "type" => "view",
