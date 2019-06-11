@@ -43,6 +43,7 @@ class TestController extends Controller
                 $this->weObj->user_tag->untagUsers($openIds, '2');
                 break;
             default:
+                return 'sadasd';
                 break;
         }
     }
