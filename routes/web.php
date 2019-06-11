@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 Route::any('/wechat', 'WeChatController@serve');
 
-Route::get('/test', 'TestController@tag');
+Route::get('/test', 'TestController@create');
 
 
 //输出token
