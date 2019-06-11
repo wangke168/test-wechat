@@ -27,10 +27,10 @@ class TestController extends Controller
     public function create()
     {
         $result = $this->weObj->qrcode->forever(100);// 或者 $app->qrcode->forever("foo");
-        return $result['ticket'];
-        $ticket = $result->ticket;
+//        return $result['ticket'];
+        $ticket = $result['ticket'];
         $url = $this->weObj->qrcode->url($ticket);
-
+return $url;
         $content = file_get_contents($url);
 
         $id='101';
