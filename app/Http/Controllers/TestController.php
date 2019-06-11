@@ -32,7 +32,7 @@ class TestController extends Controller
                 return $this->weObj->user_tag->create('测试');
                 break;
             case 'get':
-                $this->weObj->user_tag->usersOfTag('2', $nextOpenId = '');
+                $this->weObj->user_tag->usersOfTag('100', $nextOpenId = '');
                 break;
             case 'add':
                 $openIds = ['o5--l1Pl9YZWPj9n342XbdpJdG8w'];
