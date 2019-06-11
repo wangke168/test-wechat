@@ -98,7 +98,7 @@ class MenuController extends Controller
                     [
                         "type" => "view",
                         "name" => "儿童电影节",
-                        "key" => "https://mp.weixin.qq.com/s/8GWBO7eNtkk9AMl4TpM4sQ"
+                        "url" => "https://mp.weixin.qq.com/s/8GWBO7eNtkk9AMl4TpM4sQ"
                     ],
                     [
                         "type" => "view",
@@ -113,7 +113,7 @@ class MenuController extends Controller
                     [
                         "type" => "click",
                         "name" => "童星盛典",
-                        "url" => "8"
+                        "key" => "8"
                     ],
                 ],
             ],
@@ -123,12 +123,12 @@ class MenuController extends Controller
                     [
                         "type" => "view",
                         "name" => "横店景区简介",
-                        "key" => "http://m.hengdianworld.com/info_jq.aspx"
+                        "url" => "http://m.hengdianworld.com/info_jq.aspx"
                     ],
                     [
                         "type" => "view",
                         "name" => "演艺秀简介",
-                        "key" => "http://m.hengdianworld.com/info_yyx.aspx"
+                        "url" => "http://m.hengdianworld.com/info_yyx.aspx"
                     ],
                     [
                         "type" => "view",
