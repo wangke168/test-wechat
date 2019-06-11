@@ -25,6 +25,12 @@ class TestController extends Controller
     {
         $type=$request->input('type');
         switch ($type){
+            case 'tag_list':
+                return $this->weObj->user_tag->list();
+                break;
+            case 'tag_add':
+                return $this->weObj->user_tag->create('测试');
+                break;
             case 'get':
                 $this->weObj->user_tag->usersOfTag('2', $nextOpenId = '');
                 break;
