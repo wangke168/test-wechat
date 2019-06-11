@@ -21,6 +21,29 @@ class TestController extends Controller
         $this->templateId=env('TEST_TEMPLATEID_TICKET');
     }
 
+    public function tag(Request $request)
+    {
+        $type=$request->input('type');
+        switch ($type){
+            case 'get':
+                $this->weObj->user_tag->usersOfTag('2', $nextOpenId = '');
+                break;
+            case 'add':
+                $openIds = ['o5--l1Pl9YZWPj9n342XbdpJdG8w'];
+                $this->weObj->user_tag->tagUsers($openIds, '2');
+                break;
+            case 'del':
+                $openIds = ['o5--l1Pl9YZWPj9n342XbdpJdG8w'];
+                $this->weObj->user_tag->untagUsers($openIds, '2');
+                break;
+            default:
+                break;
+        }
+    }
+
+
+
+
     public function response_test1()
     {
 
